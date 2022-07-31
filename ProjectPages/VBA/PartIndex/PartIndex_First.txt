@@ -1,0 +1,21 @@
+Sub main()
+	CreateParam()
+	Parameter("Index_Action") = "First"
+
+	iLogicVb.RunRule("Part_Index_Populate")
+End Sub
+
+Function CreateParam()
+	Dim userParams As UserParameters
+	Dim param As Parameter 
+	
+	userParams = ThisApplication.ActiveDocument.Parameters.UserParameters
+	param = userParams.AddByValue("Index_Action", "", UnitsTypeEnum.kTextUnits)
+	 
+	For Each oPara As Parameter In userParams
+		Dim oName As String = oPara.Name
+		If oName = "Index_Action_1" Then 
+			oPara.Delete
+		End If
+	Next
+End Function

@@ -1,0 +1,131 @@
+Sub main()
+	Dim objDrawDoc As DrawingDocument
+
+	objDrawDoc = ThisApplication.ActiveDocument
+
+	iLogicVB.RunRule("Part_Index_Remove")
+
+	For Each Sheet In objDrawDoc.Sheets
+        For Each BOM In Sheet.PartsLists
+		
+            BOMName = BOM.ReferencedDocumentDescriptor.DisplayName
+            NewBOMSheetIndex = getSheetIndex(BOM.Parent.Name)
+			
+			If Not NewBOMSheetIndex <> -1 Then
+				MyMsg = MsgBox("The " & BOMName & " does not have an index",vbOKOnly)
+				Exit For
+			End If
+			
+            For Each PartSheet In objDrawDoc.Sheets
+				UpdatePartLabel(PartSheet, BOM, NewBOMSheetIndex)
+            Next PartSheet
+        Next BOM
+    Next Sheet
+End Sub
+
+Private Function getSheetIndex(SheetName) As Integer
+    Dim ColonIndex As Integer
+
+    ColonIndex = InStr(1, SheetName, ":")
+	If ColonIndex <> 0 Then
+    	getSheetIndex = Right(SheetName, Len(SheetName) - ColonIndex)
+	Else
+		getSheetIndex = -1
+	End If
+End Function
+
+Private Function UpdatePartLabel(Sheet, BOM, NewBOMSheetIndex)
+    Dim View As Object
+	Dim Part As Object
+    Dim PartName As String
+    Dim VerifyWholeName As Boolean
+    Dim ItemNumber As String
+    Dim ViewLabelName As String
+    Dim AddToLabel As String
+	Dim PrefixLabel As String
+	Dim SuffixLabel As String
+	Dim ViewIndexString As String
+	Dim IsLabelled As Boolean
+	Dim PartSheetIndex As Integer
+    
+    For Each View In Sheet.DrawingViews
+        For Each Part In BOM.PartsListRows
+            PartName = Part.Item(4).Value
+            VerifyWholeName = VerifyWholeString(View.Label.Text, PartName)
+                
+            If VerifyWholeName <> False Then
+                ItemNumber = CStr(Part.Item(2).Value)
+                ViewLabelName = View.Label.FormattedText
+                AddToLabel = "(" + CStr(NewBOMSheetIndex) + "-" + ItemNumber + ") "
+				PreffixLabel = "<StyleOverride FontSize='0.635'>"
+				SuffixLabel = "</StyleOverride>"
+                ViewIndexString = PreffixLabel + AddToLabel + SuffixLabel
+				
+				IndexType = Parameter("Index_Action")
+                IsLabelled = CheckForIndexLabel(ViewLabelName, PreffixLabel, SuffixLabel)
+				If IsLabelled <> True Then
+					ModifyIndexLabelInView(View, ViewIndexString + ViewLabelName)
+				Else If Not IndexType <> "All" Then
+					ModifyIndexLabelInView(View, ViewIndexString + ViewLabelName)
+				End If
+                PartSheetIndex = getSheetIndex(Sheet.Name)
+				AddSheetIndexToBOM(Part, PartSheetIndex, PartName, Sheet.Name)
+            End If
+        Next Part
+    Next View
+End Function
+
+Private Function VerifyWholeString(WholeString As String, CheckString As String) As Boolean
+    Dim StringPos As Integer
+	Dim FrontChar As String
+	Dim EndScaleChar As String
+	Dim EndEAChar As String
+    
+    StringPos = InStr(1, WholeString, CheckString)
+    
+    On Error Resume Next
+    FrontChar = Mid(WholeString, StringPos - 1, 1)
+    If Not FrontChar <> " " Then
+        NextChar = Mid(WholeString, StringPos - 2, 1)
+    End If
+	EndScaleChar = Mid(WholeString, StringPos + Len(CheckString), 5)
+	EndEAChar = Mid(WholeString, StringPos + Len(CheckString), 11)
+
+    If (Not FrontChar <> Nothing Or Not NextChar <> ")") And (Not EndScaleChar <> "SCALE" Or Not EndEAChar <> " - EA REQ'D") And StringPos <> 0 Then
+        VerifyWholeString = True
+    Else
+        VerifyWholeString = False
+    End If
+End Function
+
+Private Function CheckForIndexLabel(ViewLabel, PreffixLabel, SuffixLabel) As Boolean
+	Dim PreffixIndex As Integer
+	Dim SuffixIndex As Integer
+	Dim CheckString As String
+	Dim Tags As Integer
+	
+	PreffixIndex = InStr(ViewLabel, PreffixLabel)
+	If PreffixIndex > 0 Then
+		SuffixIndex = InStr(PreffixIndex, ViewLabel, SuffixLabel)
+		CheckString = Mid(ViewLabel, PreffixIndex, SuffixIndex + Len(SuffixLabel))
+	
+		Tags = InStr(CheckString, "Property")
+		If Tags <> 0 Then
+			CheckForIndexLabel = False
+		Else
+			CheckForIndexLabel = True
+		End If
+	Else
+		CheckForIndexLabel = False
+	End If
+End Function
+
+Private Function ModifyIndexLabelInView(View, ViewLabelString)
+	View.Label.FormattedText = ViewLabelString
+End Function
+
+Private Function AddSheetIndexToBOM(Part, PartSheetIndex, PartName, SheetName)
+	If PartSheetIndex <> -1 Then
+		Part.Item(1).Value = PartSheetIndex
+	End If
+End Function

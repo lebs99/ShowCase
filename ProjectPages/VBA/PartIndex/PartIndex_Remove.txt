@@ -1,0 +1,57 @@
+Sub main()
+	objDrawDoc = ThisApplication.ActiveDocument
+
+	For Each Sheet In objDrawDoc.Sheets
+		For Each ItemView In Sheet.DrawingViews
+			RemoveIndexLabel(ItemView)
+		Next ItemView
+	Next Sheet
+End Sub
+
+Private Function RemoveIndexLabel(ItemView)
+	Dim PreffixLabel As String
+	Dim SuffixLabel As String
+	Dim PreffixIndex As Integer
+	Dim SuffixIndex As Integer
+	Dim IndexRemoved As String
+	Dim HasIndexLabel As Boolean
+	
+	ViewLabel = ItemView.Label.FormattedText
+	PreffixLabel = "<StyleOverride FontSize='0.635'>"
+	SuffixLabel = "</StyleOverride>"
+	PreffixIndex = InStr(ViewLabel, PreffixLabel)
+	If PreffixIndex > 0 Then
+		SuffixIndex = InStr(PreffixIndex, ViewLabel, SuffixLabel)
+		IndexRemoved = Left(ViewLabel, PreffixIndex - 1) & Mid(ViewLabel, SuffixIndex + Len(SuffixLabel), Len(ViewLabel))
+		HasIndexLabel = CheckForIndexLabel(ViewLabel, PreffixLabel, SuffixLabel)
+		If HasIndexLabel <> False Then
+			ModifyIndexLabelInView(ItemView, IndexRemoved)
+		End If
+	End If
+End Function
+
+Private Function CheckForIndexLabel(ViewLabel, PreffixLabel, SuffixLabel) As Boolean
+	Dim PreffixIndex As Integer
+	Dim SuffixIndex As Integer
+	Dim CheckString As String
+	Dim Tags As Integer
+	
+	PreffixIndex = InStr(ViewLabel, PreffixLabel)
+	If PreffixIndex > 0 Then
+		SuffixIndex = InStr(PreffixIndex, ViewLabel, SuffixLabel)
+		CheckString = Mid(ViewLabel, PreffixIndex, SuffixIndex + Len(SuffixLabel))
+	
+		Tags = InStr(CheckString, "Property")
+		If Tags <> 0 Then
+			CheckForIndexLabel = False
+		Else
+			CheckForIndexLabel = True
+		End If
+	Else
+		CheckForIndexLabel = False
+	End If
+End Function
+
+Private Function ModifyIndexLabelInView(View, ViewLabelString)
+	View.Label.FormattedText = ViewLabelString
+End Function

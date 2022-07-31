@@ -1,0 +1,32 @@
+Public Sub Main()
+    Dim objDrawDoc As DrawingDocument
+    
+    objDrawDoc = CheckForDrawingDoc
+    If objDrawDoc Is Nothing Then
+		Exit Sub
+	End If
+	
+	iLogicForm.Show("Part Label Actions")
+End Sub
+
+Private Function CheckForDrawingDoc As Object
+	Dim objDoc As Document = Nothing
+	
+	objDoc = ThisApplication.ActiveDocument
+	
+    If objDoc Is Nothing Then
+        MsgBox ("No Active Document")
+        objDoc = Nothing
+        CheckForDrawingDoc = Nothing
+		Exit Function
+    End If
+
+    If objDoc.DocumentType <> kDrawingDocumentObject Then
+        MsgBox ("Not a drawing document")
+        objDoc = Nothing
+        CheckForDrawingDoc = Nothing
+		Exit Function
+    End If
+	
+	CheckForDrawingDoc = objDoc
+End Function
