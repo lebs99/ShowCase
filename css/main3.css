@@ -1,0 +1,14 @@
+.body-1 {
+    background-color: white;
+}
+.container.my-grid {
+    display: grid;
+    grid-template-rows: auto auto auto;
+    gap: 2em;
+    padding: 2.5em;
+    border: 5px black;
+}
+.container.header {
+    grid-row: 1;
+    color: red;
+}

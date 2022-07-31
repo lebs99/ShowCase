@@ -1,0 +1,9 @@
+:root {
+    --bgmaincolor: rgb(104, 144, 126);
+    --bgsecondarycolor: rgb(0, 0, 0);
+    --bgterciarycolor: rgb(34, 53, 39);
+    --bghovercolor: rgb(131, 165, 133);
+    --textmaincolor: rgb(0, 0, 0);
+    --textsecondarycolor: rgb(188, 219, 190);
+    --texthovercolor: rgb(0, 0, 0);
+  }
