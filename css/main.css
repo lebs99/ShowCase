@@ -1,11 +1,11 @@
 /* defined variables */
 :root {
-  --bgmaincolor: rgb(104, 144, 126);
+  --bgmaincolor: white;
   --bgsecondarycolor: rgb(0, 0, 0);
   --bgterciarycolor: rgb(34, 53, 39);
   --bghovercolor: rgb(131, 165, 133);
   --textmaincolor: rgb(21, 29, 21);
-  --textsecondarycolor: rgb(188, 219, 190);
+  --textsecondarycolor: rgb(251, 252, 251);
   --texthovercolor: rgb(21, 29, 21);
 }
 
@@ -38,34 +38,34 @@
   align-content: center;
 }
 .container.header .header.content {
-  display: grid;
+  display: flex;
   flex-direction: row;
 }
 .container.header .header.content .content.menu-item {
-  display: flex;
-  flex-direction: row;
-  margin-left: 20px;
-  color: var(--textmaincolor);
+  display: contents;
+  width: fit-content;
   align-items: center;
-  justify-content: flex-start;
 }
 .container.header .header.content .content.menu-item .menu-item.item {
-  padding: 12px 0.5em;
-  margin: 0 2em 0 0;
-  white-space: nowrap;
-  justify-content: center;
+  display: flex;
+  height: 100%;
+  margin-block: 0px;
+  padding: 0px 5vw;
+  border-right: 2px solid var(--textmaincolor);
   background-color: var(--bgmaincolor);
+  align-items: center;
+  justify-content: center;
 }
 .container.header .header.content .content.menu-item .menu-item.item:hover {
-  color: var(--texthovercolor);
-  background-color: var(--bghovercolor);
+  color: var(--textmaincolor);
+  background-color: var(--textsecondarycolor);
 }
 
 .header.nav {
   z-index: 2;
   display: none;
   position: fixed;
-  top: calc(15vh + 10px);
+  top: 15vh;
   width: fit-content;
   height: fit-content;
   border: 3px solid var(--textmaincolor);
@@ -76,7 +76,7 @@
   position: fixed;
   display: flex;
   flex-direction: column;
-  top: calc(15vh + 10px);
+  top: 15vh;
   left: 10px;
   height: 100%;
   width: 20vw;
@@ -122,7 +122,7 @@
   display: block;
   color: var(--textsecondarycolor);
   overflow: hidden;
-  top: calc(15vh + 10px);
+  top: 15vh;
   left: calc(20vw + 10px);
   right: 10px;
   height: 400px;
@@ -136,7 +136,7 @@
   height: 100%;
   align-items: flex-start;
   justify-content: center;
-  background-image: linear-gradient(90deg, rgba(34, 53, 39, 0.99) 40%, rgba(34, 53, 39, 0.85) 80%, rgba(34, 53, 39, 0.101) 95%);
+  background-image: linear-gradient(90deg, rgba(22, 34, 25, 0.99) 40%, rgba(22, 34, 25, 0.85) 80%, rgba(34, 53, 39, 0.101) 95%);
 }
 
 .modal.codeModal {
@@ -202,7 +202,8 @@
   background-color: var(--bgterciarycolor);
 }
 
-.contents.image.large {
+.contents.image.large,
+.contents.image.small {
   width: fit-content;
   margin: 0px 30px;
   padding: 10px 15px;
@@ -214,11 +215,6 @@
 }
 
 .contents.image.small {
-  margin: 0px 30px;
-  padding: 10px 15px;
-  background-color: var(--bgterciarycolor);
-  height: auto;
-  width: fit-content;
   max-width: 50%;
 }
 
@@ -228,7 +224,8 @@
   justify-content: center;
 }
 
-.contents.image.small img:hover {
+.contents.image.small,
+.contents.image.large img:hover {
   cursor: pointer;
 }
 
@@ -336,7 +333,8 @@
 }
 .container.articlegrid .articlegrid.tab {
   display: grid;
-  grid-template-rows: none;
+  grid-template-rows: auto;
+  grid-template-columns: auto auto auto;
   grid-auto-columns: max-content;
   border: 3px solid var(--textsecondarycolor);
   background-color: var(--bgterciarycolor);
@@ -561,6 +559,7 @@ h4 {
 
 p {
   margin: 5px;
+  -webkit-text-stroke: thin;
 }
 
 button {
@@ -586,6 +585,17 @@ img {
 
 img:hover {
   cursor: pointer;
+}
+
+#headerProjectsButton {
+  height: 100%;
+  padding: 0px;
+  border: none;
+  color: var(--textmaincolor);
+}
+
+#headerProjectsButton:hover {
+  color: var(--texthovercolor);
 }
 
 #html-image {
