@@ -31,16 +31,33 @@ function showContent(event, showId, parentClass, activateClass, hideAllContent=f
     document.getElementById(showId).style.display = "block";
 }
 
+window.onload = function() {
+    try {
+        window.fixedHeight = document.getElementById("fixedContainer").offsetHeight;
+        window.headerHeight = document.getElementById("containerHeader").offsetHeight;
+    } catch{
+        return;
+    }
+}
+
 window.onscroll = function () {
-    if (window.innerWidth < 900) {
-       if (document.documentElement.scrollTop > 313) {
-            document.getElementById("containerHeader").style.position = "relative";
-            document.getElementById("containerHeader").style.top = "313px";
-            document.getElementById("containerHeader").style.left = "0px";
-            document.getElementById("containerHeader").style.right = "0px";
+    if (document.documentElement.scrollTop == window.fixedHeight + window.headerHeight + 20) { 
+        console.log(window.fixedHeight + window.headerHeight);
+        console.log(document.documentElement.scrollTop);
+       if (document.getElementById("containerHeader").className == "container header") {
+            document.getElementById("headerLine").style.display = "none";
+            document.getElementById("containerHeader").className = "container sticky-header";
+
+            //document.getElementById("containerHeader").style.position = "absolute";
+            //document.getElementById("containerHeader").style.top = "0px";
+            //document.getElementById("containerHeader").style.left = "0px";
+            //document.getElementById("containerHeader").style.right = "0px";
         }else {
+            document.getElementById("headerLine").style.display = "block";
+
+            document.getElementById("containerHeader").className = "container header";
             document.getElementById("containerHeader").style.position = "fixed";
-            document.getElementById("containerHeader").style.top = "10px";
+            document.getElementById("containerHeader").style.top = "0px";
             document.getElementById("containerHeader").style.left = "10px";
             document.getElementById("containerHeader").style.right = "10px";
         }
@@ -48,6 +65,14 @@ window.onscroll = function () {
 }
 
 window.onresize = function () {
+    if (window.innerWidth < 900) {
+        try{
+            window.fixedHeight = document.getElementById("fixedContainer").offsetHeight;
+            window.headerHeight = document.getElementById("containerHeader").offsetHeight;
+        } catch{
+            
+        }
+    }
     if (window.innerWidth > 900) {
         document.getElementById("containerHeader").style.position = "fixed";
         document.getElementById("containerHeader").style.top = "0px";
